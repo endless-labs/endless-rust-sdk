@@ -1,0 +1,35 @@
+[package]
+name = "endless-vm-types"
+description = "Endless VM types"
+version = "0.0.1"
+
+# Workspace inherited keys
+authors = { workspace = true }
+edition = { workspace = true }
+homepage = { workspace = true }
+license = { workspace = true }
+publish = { workspace = true }
+repository = { workspace = true }
+rust-version = { workspace = true }
+
+[dependencies]
+anyhow = { workspace = true }
+endless-aggregator = { workspace = true }
+endless-crypto = { workspace = true }
+endless-gas-algebra = { workspace = true }
+endless-gas-schedule = { workspace = true }
+endless-types = { workspace = true }
+bcs = { workspace = true }
+bytes = { workspace = true }
+claims = { workspace = true }
+either = { workspace = true }
+move-binary-format = { workspace = true }
+move-core-types = { workspace = true }
+move-vm-types = { workspace = true }
+rand = { workspace = true }
+serde = { workspace = true }
+
+[dev-dependencies]
+endless-aggregator = { workspace = true, features = ["testing"] }
+endless-gas-schedule = { workspace = true, features = ["testing"] }
+test-case = { workspace = true }

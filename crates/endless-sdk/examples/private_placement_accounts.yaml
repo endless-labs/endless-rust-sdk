@@ -1,0 +1,35 @@
+
+#PE
+- private_placement_address: 0x27999c17fbd7b99286320bbf5a0f487d152e416c311debb0e277464598872762
+  total_coins: 110000000000000000
+  first_unlock_percent: 20
+  first_unlock_epoch: 10
+  stable_unlock_interval: 36
+  stable_unlock_periods: 23
+- private_placement_address: 0xa7114c42e8c07809ef640ebbe8adc943b15a7746e6ce6dcb915d1944538363ab
+  total_coins: 50000000000000000
+  first_unlock_percent: 20
+  first_unlock_epoch: 10
+  stable_unlock_interval: 36
+  stable_unlock_periods: 23
+- private_placement_address: 0x715c79b2e7e3efa0b1cd9d4b92e0091eee8be9fae924db8001bca37a5483da49
+  total_coins: 30000000000000000
+  first_unlock_percent: 20
+  first_unlock_epoch: 10
+  stable_unlock_interval: 36
+  stable_unlock_periods: 23
+- private_placement_address: 0xea673f5016fdebd6d08cb9ffbdb95f3935fab1b2251234d286171aaecbd2f3cd
+  total_coins: 9700000000000000
+  first_unlock_percent: 20
+  first_unlock_epoch: 10
+  stable_unlock_interval: 36
+  stable_unlock_periods: 23
+
+
+  #EX
+- private_placement_address: 0xc589165f31f7805965950a5af30b53455c147a98facdb42c4f8fd4e4c2733ca3
+  total_coins: 875300000000000000
+  first_unlock_percent: 100
+  first_unlock_epoch: 0
+  stable_unlock_interval: 0
+  stable_unlock_periods: 0

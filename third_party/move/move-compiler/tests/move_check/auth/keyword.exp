@@ -1,0 +1,59 @@
+error[E05001]: ability constraint not satisfied
+  ┌─ tests/move_check/auth/keyword.move:3:14
+  │
+3 │         key: auth,
+  │              ^^^^
+  │              │
+  │              Invalid field type. The struct was declared with the ability 'key' so all fields require the ability 'store'
+  │              The type 'auth' does not have the ability 'store'
+
+error[E05001]: ability constraint not satisfied
+  ┌─ tests/move_check/auth/keyword.move:7:20
+  │
+6 │     fun f1(key: auth) {
+  │                 ---- The type 'auth' does not have the ability 'copy'
+7 │         let _key = copy key;
+  │                    ^^^^^^^^ Invalid 'copy' of owned value without the 'copy' ability
+
+error[E04007]: incompatible types
+   ┌─ tests/move_check/auth/keyword.move:10:16
+   │
+10 │         let a: auth = 1;
+   │                ^^^^   - Given: integer
+   │                │       
+   │                Invalid type annotation
+   │                Expected: 'auth'
+
+error[E04007]: incompatible types
+   ┌─ tests/move_check/auth/keyword.move:11:16
+   │
+11 │         let b: auth = @0xcafe;
+   │                ^^^^   ------- Given: 'address'
+   │                │       
+   │                Invalid type annotation
+   │                Expected: 'auth'
+
+error[E04007]: incompatible types
+   ┌─ tests/move_check/auth/keyword.move:12:16
+   │
+ 9 │     fun f2(caller: &signer, _key: &auth) {
+   │                    ------- Given: '&signer'
+   ·
+12 │         let c: auth = caller;
+   │                ^^^^
+   │                │
+   │                Invalid type annotation
+   │                Expected: 'auth'
+
+error[E03011]: invalid use of reserved name
+   ┌─ tests/move_check/auth/keyword.move:14:9
+   │
+14 │     fun auth() {}
+   │         ^^^^ Invalid function name 'auth'. 'auth' is restricted and cannot be used to name a function
+
+error[E03011]: invalid use of reserved name
+   ┌─ tests/move_check/auth/keyword.move:19:14
+   │
+19 │ script { fun auth() {} }
+   │              ^^^^ Invalid function name 'auth'. 'auth' is restricted and cannot be used to name a function
+

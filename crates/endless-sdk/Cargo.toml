@@ -1,0 +1,43 @@
+[package]
+description = "The Official Endless SDK"
+name = "endless-sdk"
+version = "0.0.3"
+
+authors = {workspace = true}
+edition = {workspace = true}
+homepage = {workspace = true}
+license = {workspace = true}
+publish = {workspace = true}
+repository = {workspace = true}
+rust-version = {workspace = true}
+
+[dependencies]
+anyhow = {workspace = true}
+bcs = {workspace = true}
+bytes = { workspace = true }
+ed25519-dalek-bip32 = {workspace = true}
+endless-cached-packages = {workspace = true}
+endless-crypto = {workspace = true}
+endless-global-constants = {workspace = true}
+endless-indexer-client = {workspace = true}
+endless-ledger = {workspace = true}
+endless-logger = {workspace = true}
+endless-rest-client = {workspace = true}
+endless-types = {workspace = true}
+hex = {workspace = true}
+move-core-types = {workspace = true}
+rand_core = {workspace = true}
+reqwest = {workspace = true}
+serde = {workspace = true}
+serde_json = {workspace = true}
+tiny-bip39 = {workspace = true}
+base64-url = {workspace = true}
+
+[dev-dependencies]
+once_cell = {workspace = true}
+rand = {workspace = true}
+tokio = {workspace = true}
+url = {workspace = true}
+
+[package.metadata.cargo-machete]
+ignored = ["tiny-bip39"]

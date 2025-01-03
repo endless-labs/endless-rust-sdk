@@ -1,0 +1,6 @@
+error[E01002]: unexpected token
+  ┌─ tests/move_check/sponsored_function/function_definition.move:4:5
+  │
+4 │     sponsored fun f3() {}
+  │     ^^^^^^^^^ 'sponsored' can only be used with a 'entry' function
+

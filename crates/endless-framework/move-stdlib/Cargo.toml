@@ -1,0 +1,43 @@
+[package]
+name = "endless-move-stdlib"
+version = "0.1.1"
+edition = "2021"
+authors = ["Diem Association <opensource@diem.com>"]
+description = "Diem stdlib"
+repository = "https://github.com/diem/diem"
+homepage = "https://diem.com"
+license = "Apache-2.0"
+publish = false
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[dependencies]
+either = { workspace = true }
+endless-gas-schedule = { workspace = true } 
+endless-native-interface = { workspace = true }
+anyhow = "1.0.52"
+hex = "0.4.3"
+log = "0.4.14"
+move-binary-format = { workspace = true }
+move-command-line-common = { workspace = true }
+move-compiler =  { workspace = true }
+move-core-types =  { workspace = true }
+move-docgen =  { workspace = true }
+move-errmapgen =  { workspace = true }
+move-prover =  { workspace = true }
+move-vm-runtime =  { workspace = true }
+move-vm-types =  { workspace = true }
+sha2 = "0.9.3"
+sha3 = "0.9.1"
+smallvec = "1.6.1"
+walkdir = "2.3.1"
+
+[dev-dependencies]
+dir-diff = "0.3.2"
+file_diff = "1.0.0"
+move-cli =  { workspace = true }
+move-package =  { workspace = true }
+move-unit-test =  { workspace = true }
+tempfile = "3.2.0"
+
+[features]
+testing = []

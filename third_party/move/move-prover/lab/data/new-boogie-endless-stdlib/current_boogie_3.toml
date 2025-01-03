@@ -1,0 +1,10 @@
+move_named_address_values = [
+    "std=0x1",
+    "endless_std=0x1",
+    "endless_framework=0x1",
+    "endless_token=0x4",
+    "core_resources=0xA550C18",
+    "vm_reserved=0x0",
+    "Extensions=0x1",
+]
+move_deps = ["../../../../../../endless-move/framework/move-stdlib/sources", "../../../../../../endless-move/framework/endless-stdlib/sources"]
