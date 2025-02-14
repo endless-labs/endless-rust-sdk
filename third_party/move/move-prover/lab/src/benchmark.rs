@@ -173,7 +173,7 @@ fn run_benchmark(
         options.backend.custom_natives =
             Some(move_prover_boogie_backend::options::CustomNativeOptions {
                 template_bytes: include_bytes!(
-                    "../../../../../endless-move/framework/src/endless-natives.bpl"
+                    "../../../../../crates/endless-framework/src/endless-natives.bpl"
                 )
                 .to_vec(),
                 module_instance_names: vec![(
