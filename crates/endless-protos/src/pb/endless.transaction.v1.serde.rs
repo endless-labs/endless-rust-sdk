@@ -5655,6 +5655,176 @@ impl<'de> serde::Deserialize<'de> for Oidb {
         deserializer.deserialize_struct("endless.transaction.v1.Oidb", FIELDS, GeneratedVisitor)
     }
 }
+impl serde::Serialize for RawTransaction {
+    #[allow(deprecated)]
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        use serde::ser::SerializeStruct;
+        let mut len = 0;
+        if self.timestamp != 0 {
+            len += 1;
+        }
+        if self.version != 0 {
+            len += 1;
+        }
+        if !self.txn.is_empty() {
+            len += 1;
+        }
+        if !self.events.is_empty() {
+            len += 1;
+        }
+        if !self.changes.is_empty() {
+            len += 1;
+        }
+        let mut struct_ser = serializer.serialize_struct("endless.transaction.v1.RawTransaction", len)?;
+        if self.timestamp != 0 {
+            struct_ser.serialize_field("timestamp", ToString::to_string(&self.timestamp).as_str())?;
+        }
+        if self.version != 0 {
+            struct_ser.serialize_field("version", ToString::to_string(&self.version).as_str())?;
+        }
+        if !self.txn.is_empty() {
+            struct_ser.serialize_field("txn", pbjson::private::base64::encode(&self.txn).as_str())?;
+        }
+        if !self.events.is_empty() {
+            struct_ser.serialize_field("events", &self.events.iter().map(pbjson::private::base64::encode).collect::<Vec<_>>())?;
+        }
+        if !self.changes.is_empty() {
+            struct_ser.serialize_field("changes", pbjson::private::base64::encode(&self.changes).as_str())?;
+        }
+        struct_ser.end()
+    }
+}
+impl<'de> serde::Deserialize<'de> for RawTransaction {
+    #[allow(deprecated)]
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        const FIELDS: &[&str] = &[
+            "timestamp",
+            "version",
+            "txn",
+            "events",
+            "changes",
+        ];
+
+        #[allow(clippy::enum_variant_names)]
+        enum GeneratedField {
+            Timestamp,
+            Version,
+            Txn,
+            Events,
+            Changes,
+        }
+        impl<'de> serde::Deserialize<'de> for GeneratedField {
+            fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
+            where
+                D: serde::Deserializer<'de>,
+            {
+                struct GeneratedVisitor;
+
+                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
+                    type Value = GeneratedField;
+
+                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                        write!(formatter, "expected one of: {:?}", &FIELDS)
+                    }
+
+                    #[allow(unused_variables)]
+                    fn visit_str<E>(self, value: &str) -> std::result::Result<GeneratedField, E>
+                    where
+                        E: serde::de::Error,
+                    {
+                        match value {
+                            "timestamp" => Ok(GeneratedField::Timestamp),
+                            "version" => Ok(GeneratedField::Version),
+                            "txn" => Ok(GeneratedField::Txn),
+                            "events" => Ok(GeneratedField::Events),
+                            "changes" => Ok(GeneratedField::Changes),
+                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
+                        }
+                    }
+                }
+                deserializer.deserialize_identifier(GeneratedVisitor)
+            }
+        }
+        struct GeneratedVisitor;
+        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
+            type Value = RawTransaction;
+
+            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                formatter.write_str("struct endless.transaction.v1.RawTransaction")
+            }
+
+            fn visit_map<V>(self, mut map: V) -> std::result::Result<RawTransaction, V::Error>
+                where
+                    V: serde::de::MapAccess<'de>,
+            {
+                let mut timestamp__ = None;
+                let mut version__ = None;
+                let mut txn__ = None;
+                let mut events__ = None;
+                let mut changes__ = None;
+                while let Some(k) = map.next_key()? {
+                    match k {
+                        GeneratedField::Timestamp => {
+                            if timestamp__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("timestamp"));
+                            }
+                            timestamp__ = 
+                                Some(map.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
+                            ;
+                        }
+                        GeneratedField::Version => {
+                            if version__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("version"));
+                            }
+                            version__ = 
+                                Some(map.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
+                            ;
+                        }
+                        GeneratedField::Txn => {
+                            if txn__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("txn"));
+                            }
+                            txn__ = 
+                                Some(map.next_value::<::pbjson::private::BytesDeserialize<_>>()?.0)
+                            ;
+                        }
+                        GeneratedField::Events => {
+                            if events__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("events"));
+                            }
+                            events__ = 
+                                Some(map.next_value::<Vec<::pbjson::private::BytesDeserialize<_>>>()?
+                                    .into_iter().map(|x| x.0).collect())
+                            ;
+                        }
+                        GeneratedField::Changes => {
+                            if changes__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("changes"));
+                            }
+                            changes__ = 
+                                Some(map.next_value::<::pbjson::private::BytesDeserialize<_>>()?.0)
+                            ;
+                        }
+                    }
+                }
+                Ok(RawTransaction {
+                    timestamp: timestamp__.unwrap_or_default(),
+                    version: version__.unwrap_or_default(),
+                    txn: txn__.unwrap_or_default(),
+                    events: events__.unwrap_or_default(),
+                    changes: changes__.unwrap_or_default(),
+                })
+            }
+        }
+        deserializer.deserialize_struct("endless.transaction.v1.RawTransaction", FIELDS, GeneratedVisitor)
+    }
+}
 impl serde::Serialize for ScriptPayload {
     #[allow(deprecated)]
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>

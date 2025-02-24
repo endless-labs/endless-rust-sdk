@@ -257,6 +257,7 @@ proc-macro2 = "1.0.38"
 proptest = "1.6.0"
 proptest-derive = "0.5.1"
 prost = { version = "0.12.3", features = ["no-recursion-limit"] }
+prost-types = "0.12.3"
 quote = "1.0.18"
 rand = "0.7.3"
 rand_chacha = { version = "0.3.0", default-features = false }
