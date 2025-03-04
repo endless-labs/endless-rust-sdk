@@ -11,7 +11,7 @@ use std::{
     path::Path,
 };
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct ErrorDescription {
     /// The constant name of error e.g., ECANT_PAY_DEPOSIT
     pub code_name: String,

@@ -5,7 +5,7 @@
 #![allow(clippy::unit_arg)]
 #![allow(clippy::arc_with_non_send_sync)]
 
-use crate::language_storage::ModuleId;
+use crate::{errmap::ErrorDescription, language_storage::ModuleId};
 use anyhow::Result;
 #[cfg(any(test, feature = "fuzzing"))]
 use proptest::prelude::*;
@@ -106,7 +106,47 @@ impl KeptVMStatus {
     }
 }
 
-pub type DiscardedVMStatus = StatusCode;
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
+pub enum DiscardedVMStatus {
+    StatusCode(StatusCode),
+    // If transaction is sponsored, only `Executed` will be kept.
+    // We want to pass move abort message to help developers debug.
+    MoveAbort {
+        location: AbortLocation,
+        code: u64,
+        info: Option<ErrorDescription>,
+    },
+}
+
+impl DiscardedVMStatus {
+    pub fn code(&self) -> StatusCode {
+        match self {
+            DiscardedVMStatus::StatusCode(code) => *code,
+            DiscardedVMStatus::MoveAbort { .. } => StatusCode::ABORTED,
+        }
+    }
+}
+
+impl From<StatusCode> for DiscardedVMStatus {
+    fn from(status_code: StatusCode) -> Self {
+        DiscardedVMStatus::StatusCode(status_code)
+    }
+}
+
+impl From<VMStatus> for DiscardedVMStatus {
+    fn from(status: VMStatus) -> Self {
+        match status {
+            VMStatus::Executed => unreachable!("Executed status should not be discarded"),
+            VMStatus::MoveAbort(location, code) => DiscardedVMStatus::MoveAbort {
+                location,
+                code,
+                info: None,
+            },
+            VMStatus::ExecutionFailure { status_code, .. }
+            | VMStatus::Error { status_code, .. } => DiscardedVMStatus::StatusCode(status_code),
+        }
+    }
+}
 
 /// An `AbortLocation` specifies where a Move program `abort` occurred, either in a function in
 /// a module, or in a script
@@ -245,12 +285,12 @@ impl VMStatus {
             } => {
                 match code.status_type() {
                     // Any unknown error should be discarded
-                    StatusType::Unknown => Err(code),
+                    StatusType::Unknown => Err(code.into()),
                     // Any error that is a validation status (i.e. an error arising from the prologue)
                     // causes the transaction to not be included.
-                    StatusType::Validation => Err(code),
+                    StatusType::Validation => Err(code.into()),
                     // If the VM encountered an invalid internal state, we should discard the transaction.
-                    StatusType::InvariantViolation => Err(code),
+                    StatusType::InvariantViolation => Err(code.into()),
                     // A transaction that publishes code that cannot be verified will be charged.
                     StatusType::Verification => Ok(KeptVMStatus::MiscellaneousError),
                     // If we are able to decode the`SignedTransaction`, but failed to decode

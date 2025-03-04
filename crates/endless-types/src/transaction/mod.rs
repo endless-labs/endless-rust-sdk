@@ -973,11 +973,11 @@ pub enum TransactionStatus {
 }
 
 impl TransactionStatus {
-    pub fn status(&self) -> Result<ExecutionStatus, StatusCode> {
+    pub fn status(&self) -> Result<ExecutionStatus, DiscardedVMStatus> {
         match self {
             TransactionStatus::Keep(status) => Ok(status.clone()),
-            TransactionStatus::Discard(code) => Err(*code),
-            TransactionStatus::Retry => Err(StatusCode::UNKNOWN_VALIDATION_STATUS),
+            TransactionStatus::Discard(status) => Err(status.clone()),
+            TransactionStatus::Retry => Err(StatusCode::UNKNOWN_VALIDATION_STATUS.into()),
         }
     }
 
@@ -1014,13 +1014,14 @@ impl TransactionStatus {
                 },
                 _ => TransactionStatus::Keep(recorded.into()),
             },
-            Err(code) => {
+            Err(status) => {
+                let code = status.code();
                 if code.status_type() == StatusType::InvariantViolation
                     && charge_invariant_violation
                 {
                     TransactionStatus::Keep(ExecutionStatus::MiscellaneousError(Some(code)))
                 } else {
-                    TransactionStatus::Discard(code)
+                    TransactionStatus::Discard(status)
                 }
             },
         }
@@ -1073,15 +1074,15 @@ impl VMValidatorResult {
         }
     }
 
-    pub fn error(vm_status: DiscardedVMStatus) -> Self {
+    pub fn error(vm_status: impl Into<DiscardedVMStatus>) -> Self {
         Self {
-            status: Some(vm_status),
+            status: Some(vm_status.into()),
             score: 0,
         }
     }
 
     pub fn status(&self) -> Option<DiscardedVMStatus> {
-        self.status
+        self.status.clone()
     }
 
     pub fn score(&self) -> u64 {
@@ -1978,4 +1979,12 @@ impl ViewFunctionOutput {
     pub fn new(values: Result<Vec<Vec<u8>>>, gas_used: u64) -> Self {
         Self { values, gas_used }
     }
+}
+
+pub struct RawTransactionOnStorage {
+    pub version: u64,
+    pub timestamp: u64,
+    pub txn: Vec<u8>,
+    pub write_set: Vec<u8>,
+    pub events: Vec<Vec<u8>>,
 }

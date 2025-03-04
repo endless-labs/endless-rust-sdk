@@ -1762,6 +1762,7 @@ pub enum AccountSignature {
     MultiEd25519Signature(MultiEd25519Signature),
     SingleKeySignature(SingleKeySignature),
     MultiKeySignature(MultiKeySignature),
+    MockSignature(Address),
 }
 
 impl VerifyInput for AccountSignature {
@@ -1771,6 +1772,7 @@ impl VerifyInput for AccountSignature {
             AccountSignature::MultiEd25519Signature(inner) => inner.verify(),
             AccountSignature::SingleKeySignature(inner) => inner.verify(),
             AccountSignature::MultiKeySignature(inner) => inner.verify(),
+            AccountSignature::MockSignature(_) => Ok(()),
         }
     }
 }
@@ -1784,6 +1786,9 @@ impl TryFrom<AccountSignature> for AccountAuthenticator {
             AccountSignature::MultiEd25519Signature(s) => s.try_into()?,
             AccountSignature::SingleKeySignature(s) => s.try_into()?,
             AccountSignature::MultiKeySignature(s) => s.try_into()?,
+            AccountSignature::MockSignature(_) => {
+                bail!("MockSignature is not a valid AccountAuthenticator")
+            },
         })
     }
 }
@@ -1966,6 +1971,7 @@ impl From<&AccountAuthenticator> for AccountSignature {
                 public_key: PublicKey::Bls12381(public_key.to_bytes().to_vec().into()),
                 signature: Signature::Bls12381(signature.to_bytes().to_vec().into()),
             }),
+            &Mock(authenticator) => Self::MockSignature(authenticator.into()),
         }
     }
 }

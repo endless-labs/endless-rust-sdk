@@ -384,6 +384,7 @@ impl TransactionAuthenticator {
                     };
                     single_key_authenticators.push(authenticator);
                 },
+                AccountAuthenticator::Mock(_) => {},
             };
         }
         Ok(single_key_authenticators)
@@ -539,7 +540,13 @@ pub enum AccountAuthenticator {
     Bls12381 {
         public_key: Bls12381PublicKey,
         signature: Bls12381Signature,
-    }, // ... add more schemes here
+    },
+    // Only for simulation purposes
+    // In some simulation scenarios, we don't know the public key of the account
+    // Introducing this allows simulate txn when only knowing the address
+    // This will always return `false` in verify
+    Mock(AccountAddress),
+    // ... add more schemes here
 }
 
 impl AccountAuthenticator {
@@ -552,6 +559,7 @@ impl AccountAuthenticator {
             Self::MultiKey { .. } => Scheme::MultiKey,
             Self::MultiAuthKey { .. } => Scheme::MultiAuthKey,
             Self::Bls12381 { .. } => Scheme::Bls12381,
+            Self::Mock(_) => unreachable!("Mock authenticator has no scheme"),
         }
     }
 
@@ -628,6 +636,7 @@ impl AccountAuthenticator {
                 public_key,
                 signature,
             } => signature.verify(message, public_key),
+            Self::Mock(_) => bail!("Mock authenticator verification should always fail"),
         }
     }
 
@@ -640,6 +649,7 @@ impl AccountAuthenticator {
             Self::MultiKey { authenticator } => authenticator.public_key_bytes(),
             Self::MultiAuthKey { public_keys, .. } => bcs::to_bytes(public_keys).unwrap(),
             Self::Bls12381 { public_key, .. } => public_key.to_bytes().to_vec(),
+            Self::Mock(_) => unreachable!("Mock authenticator has no public key"),
         }
     }
 
@@ -652,6 +662,7 @@ impl AccountAuthenticator {
             Self::MultiKey { authenticator } => authenticator.signature_bytes(),
             Self::MultiAuthKey { signatures, .. } => bcs::to_bytes(signatures).unwrap(),
             Self::Bls12381 { signature, .. } => signature.to_bytes().to_vec(),
+            Self::Mock(_) => unreachable!("Mock authenticator has no signature"),
         }
     }
 
@@ -671,6 +682,7 @@ impl AccountAuthenticator {
                     _ => vec![AuthenticationKey::any_key(public_key.clone())],
                 })
                 .collect(),
+            &Self::Mock(authenticator) => vec![AuthenticationKey::new(authenticator.into_bytes())],
             _ => vec![AuthenticationKey::from_preimage(
                 self.public_key_bytes(),
                 self.scheme(),
@@ -687,6 +699,7 @@ impl AccountAuthenticator {
             Self::MultiKey { authenticator } => authenticator.signatures.len(),
             Self::MultiAuthKey { signatures, .. } => signatures.len(),
             Self::Bls12381 { .. } => 1,
+            Self::Mock(_) => 1,
         }
     }
 }
